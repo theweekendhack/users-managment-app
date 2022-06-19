@@ -9,9 +9,16 @@ const { application } = require("express");
 
 const app = express();
 
+
+app.use(express.static("public")); 
 //TELL THE APP THAT EXPRESS HANDLEBARS IS OUR TEMPLATE ENGINE!
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
+
+//This tells express how to intepret the incomming FORM DATA!!! 
+
+//MUST COME BEFORE ALL OF YOUR ROUTES!!!!!! 
+app.use(express.urlencoded({extended:true}));
 
 
 app.use("/users",userController);

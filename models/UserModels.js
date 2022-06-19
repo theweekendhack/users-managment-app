@@ -10,21 +10,26 @@ class User
     }
     static async getAllUsers()
     {
+
+        //ALWAYS RETURN 0 OR MANY!!
         const results= await db.query("SELECT id, first_name,last_name,location,username,password FROM users;");
   
-        return results.rows;
+        return results.rows; 
     }
 
     static async getUser(id)
     {
-        const results= await db.query(`SELECT id, first_name,last_name,location,username,password FROM users WHERE id = ${id}`);
-        return results.rows[0]; 
-        
+
+        //ALWAYS RETURN 0 or 1
+        //db.query() - ASYNC OPERATIONS!!! THAT IT WILL ALWAYS  PROMISE!!!!!!!! 
+        const results=  await db.query(`SELECT id, first_name,last_name,location,username,password FROM users WHERE id = ${id}`);
+        return results.rows[0];
+         
     }
 
     static async deleteUser(id)
     {
-        await db.query(`DELEETE FROM users WHERE id = ${id}`);
+        await db.query(`DELETE FROM users WHERE id = ${id}`);
        
     }
 
