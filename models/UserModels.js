@@ -1,11 +1,15 @@
-const db = require("../config/db.js")
+const db = require("../config/db.js");
+const bcrypt= require("bcryptjs");
 
 class User 
 {
 
     static async createUsers(user)
     {
-       await db.query(`INSERT INTO users (first_name,last_name,username,password,location) VALUES('${user.firstName}','${user.lastName}','${user.username}', '${user.password}','${user.location}')`);
+       
+        const salt = await bcrypt.genSalt(10); 
+        const hashPassword = await bcrypt.hash(user.password,salt);
+        await db.query(`INSERT INTO users (first_name,last_name,username,password,location) VALUES('${user.firstName}','${user.lastName}','${user.username}', '${hashPassword}','${user.location}')`);
        
     }
     static async getAllUsers()
@@ -33,9 +37,13 @@ class User
        
     }
 
-    static async updateUser(id)
+    static async updateUser(user_form_data,id)
     {
-
+      await db.query(
+        `UPDATE users SET first_name ='${user_form_data.firstName}',
+        last_name='${user_form_data.lastName}',
+        location='${user_form_data.location}'
+        WHERE id=${id};`)
     }
 
   

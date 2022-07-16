@@ -1,0 +1,37 @@
+<section>
+    <h1>Edit Page</h1>
+    <form method="post" action="/users/edit/{{user.id}}" >
+        
+        <div>
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" value="{{user.first_name}}">
+        </div>
+
+        <div>
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" value="{{user.last_name}}">
+        </div>
+
+        <div>
+ 
+
+            <label for="location">Location</label>
+            <select id="location" name="location"> 
+               <option value="">Please Select A Location</option>
+                <option {{#if_eq user.location "TnT"}} selected {{/if_eq}} value="TnT">TnT</option>
+                <option {{#if_eq user.location "USA"}} selected {{/if_eq}} value="USA">United State Of America</option>
+                <option{{#if_eq user.location "Canada"}} selected {{/if_eq}} value="Canada">Canada</option>
+            </select>
+
+        </div>
+
+        <div>
+            <label for="username">Username</label>
+            <input disabled type="text" id="username" name="username" value="{{user.username}}">
+        </div>
+
+        <div>
+            <button type="submit">Update User Info</button>
+        </div>
+    </form>
+</section>

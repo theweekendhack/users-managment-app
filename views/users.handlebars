@@ -7,15 +7,11 @@
                 Location {{this.location}} <br>
                 Username {{this.username}} <br>
 
-
-
-
                 <form action="/users/delete/{{this.id}}" method="post">
                     <button type="submit">Delete User</button>
                 </form>
 
-
-                <form action="/users/edit/{{this.id}}" method="post">
+                <form action="/users/edit/{{this.id}}" method="get">
                     <button type="submit">Edit User</button>
                 </form>
             </div>

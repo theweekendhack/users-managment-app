@@ -1,23 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const ensureLoggedIn = require("../middleware/auth.js");
+
+const userModel = require("../models/UserModels.js");
+const userFormValidation = require("../middleware/userRegValdiation.js");
 
 
-const userModel = require("../models/UserModels.js")
-
-router.get("/login",(req,res)=>{
-   
-
-    res.render("index",{
-        title : "Login Page",
-    
-    });
-});
-
-router.get("/",async (req,res)=>{
-
+router.get("/", async (req,res)=>{
 
     const users_data = await userModel.getAllUsers(); //abstraction!!!!!! 
-   
    
     res.render("users",{
         title:"User Listing Page",
@@ -53,7 +44,7 @@ router.get("/details/:userid",async(req,res)=>{
     })
 });
 
-router.post("/registration",async(req,res)=>{
+router.post("/registration",userFormValidation, async(req,res)=>{
 
 
   /*
@@ -61,8 +52,6 @@ router.post("/registration",async(req,res)=>{
         2. Call the userModel to create the user
         3. res.redirect("/users") // GET A REQUEST!!! 
     */
-
-
     const user_data = req.body; // pluck out the data that was submitted via the form, from the body of the request 
     
     await userModel.createUsers(user_data);
@@ -74,20 +63,50 @@ router.post("/registration",async(req,res)=>{
 
 router.post("/delete/:id",async(req,res)=>{
 
-
     /*
         1. GET ID FOR URL
         2. CALL MODEL
         3 REDIRECT USDR
 
     */
-
     const user_id  = parseInt(req.params.id);
 
     await userModel.deleteUser(user_id);
 
     res.redirect("/users")
-})
+});
+
+
+router.get("/edit/:id", async(req,res)=>{
+
+
+    const id = parseInt(req.params.id);
+ 
+    const user = await userModel.getUser(id);
+
+    res.render("edit",{
+        user
+    });
+
+});
+
+router.post("/edit/:id",async(req,res)=>{
+
+    const id = parseInt(req.params.id);
+    const user_form_data =req.body;
+
+    await userModel.updateUser(user_form_data,id);
+
+    res.redirect("/users");
+
+ });
+
+ router.get("/profile", ensureLoggedIn,async (req,res)=>{
+
+    res.render("userprofile",{
+        title:"User Profile Page",
+    })
+});
 
 
 

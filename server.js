@@ -1,18 +1,39 @@
 const express = require("express");
-const { engine } = require('express-handlebars'); 
-
+const { create } = require('express-handlebars'); 
+const session = require("express-session");
 
 const userController = require("./controllers/UserController.js");
 const generalController = require("./controllers/GeneralController.js");
-const { application } = require("express");
-
+const authController = require("./controllers/authController.js");
 
 const app = express();
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }));
+
+const hbs = create({
+    // Specify helpers which are only registered on this instance.
+    helpers: {
+        if_eq(val1,val2,options) { 
+
+                if(val1 === val2)
+                {
+                  return  options.fn(this);
+                }
+         }
+
+
+    }
+});
 
 
 app.use(express.static("public")); 
 //TELL THE APP THAT EXPRESS HANDLEBARS IS OUR TEMPLATE ENGINE!
-app.engine('handlebars', engine());
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 //This tells express how to intepret the incomming FORM DATA!!! 
@@ -21,7 +42,15 @@ app.set('view engine', 'handlebars');
 app.use(express.urlencoded({extended:true}));
 
 
-app.use("/users",userController);
+app.use((req,res,next)=>{
+
+    res.locals.user = req.session.user; // this is avaiable to every handlebars page
+    console.log(res.locals.user);
+    next();
+});
+
+app.use("/users", userController);
+app.use("/auth", authController);
 app.use("/",generalController);
 
 
